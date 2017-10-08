@@ -1,0 +1,17 @@
+Aplikacja do obsługi delegacji oparta na Activiti BPM
+
+Czynośći do wykonania;
+1.Stworzenie diagramu
+2.Wstępne testy
+3.Projekt WEB
+4.Stworzenie Listenerów
+5.Stworzenie WebServisu jak Portal Zakupowy
+6.Testy
+6.Refaktoryzaja
+7.Podpiecie własnego serweru pocztowego(Postfix)
+8.Joby do testow i wysyłania mailow
+9.Logowanie LDAP
+10.Hibernate
+11.Primefaces do widoków
+12:Testy
+13.Panel administracyjny
