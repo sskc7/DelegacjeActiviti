@@ -24,26 +24,23 @@ public class ProcessTestMyProcessAnulujDyrektor {
 
 	
 	ProcessEngine processEngine = ProcessEngineConfiguration
-			.createStandaloneProcessEngineConfiguration()
-			.setJdbcDriver("com.mysql.jdbc.Driver")
-			.setJdbcUrl("jdbc:mysql://localhost:3306/activiti?autoReconnect=true&useSSL=false")
-			.setJdbcPassword("210283").setJdbcUsername("root")
-			.buildProcessEngine();
+	.createStandaloneProcessEngineConfiguration()
+	.setJdbcDriver("com.mysql.jdbc.Driver")
+	.setJdbcUrl("jdbc:mysql://localhost:3306/activiti?autoReconnect=true&useSSL=false")
+	.setJdbcPassword("210283").setJdbcUsername("root")
+	.buildProcessEngine();
 
 	@Test
 	public void startProcess() throws Exception {
 		//Krok1 Rejestracja Wniosku
-		
-		
+	
 		IdentityService  identityService=processEngine.getIdentityService();
 		ProcessInstance processInstance ;
 		
-		RepositoryService repositoryService = processEngine
-				.getRepositoryService();
-		
+		RepositoryService repositoryService = processEngine.getRepositoryService();
 		repositoryService.createDeployment().addInputStream(
-				"MyProcess.bpmn20.xml", ReflectUtil
-				.getResourceAsStream("diagrams/ProcessActiviti.bpmn"))
+		"MyProcess.bpmn20.xml", ReflectUtil
+		.getResourceAsStream("diagrams/ProcessActiviti.bpmn"))
 		.deploy();
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		Map<String, Object> variableMap = new HashMap<String, Object>();
@@ -53,15 +50,15 @@ public class ProcessTestMyProcessAnulujDyrektor {
 		variableMap.put("hotel", "tak");
 		variableMap.put("www", "dasas");
 		try {
-			   identityService.setAuthenticatedUserId("dasas");
-		   processInstance = runtimeService.startProcessInstanceByKey("myProcess", variableMap);
+			identityService.setAuthenticatedUserId("dasas");
+			processInstance = runtimeService.startProcessInstanceByKey("myProcess", variableMap);
 			 
-			 } finally {
-			   identityService.setAuthenticatedUserId(null);
-			 }
+		} 
+		finally {
+			identityService.setAuthenticatedUserId(null);
+		}
 		assertNotNull(processInstance.getId());
-		System.out.println("id " + processInstance.getId() + " "
-				+ processInstance.getProcessDefinitionId());
+		System.out.println("id " + processInstance.getId() + " "+ processInstance.getProcessDefinitionId());
 		System.out.println("---------------------------------");
 		//Krok2 Weryfikacja Kierownik
 		TaskService taskService = processEngine.getTaskService();
@@ -99,27 +96,26 @@ public class ProcessTestMyProcessAnulujDyrektor {
 		tasks = taskService.createTaskQuery().taskCandidateGroup("Ksiegowosc").list();
 		for (Task task : tasks) {
 			
-
 			if(task.getProcessInstanceId().equalsIgnoreCase(processInstance.getId())){
-				taskService.claim(task.getId(), "kgorska");
+			taskService.claim(task.getId(), "kgorska");
 			}
 		}
 		tasks =	taskService.createTaskQuery().taskAssignee("kgorska").list();
 		for (Task task : tasks) {
 
 			if(task.getProcessInstanceId().equalsIgnoreCase(processInstance.getId())){
-				Map<String, Object> taskVariables = new HashMap<String, Object>();	
-				//Delegacja zagraniczna ustawiamy 1
-				// 1= portal zakupowy(delegacje zagraniczne lub Polskie z hotelem lub przy transporcie samolotem
-				// 2- krajowe bez samolotu lub hotelu
-				// 3 -anulowanie delegacji				
-				taskVariables.put("accept2", "1");
-			    taskService.complete(task.getId(), taskVariables);
-			    System.out.println("getassigne: " + task.getAssignee());
-				System.out.println("getexecutionid: " + task.getExecutionId());
-				System.out.println("getid: " + task.getId());
-				System.out.println("getname: " + task.getName());
-				System.out.println("getprocessinstanceid: " + task.getProcessInstanceId());
+			Map<String, Object> taskVariables = new HashMap<String, Object>();	
+			//Delegacja zagraniczna ustawiamy 1
+			// 1= portal zakupowy(delegacje zagraniczne lub Polskie z hotelem lub przy transporcie samolotem
+			// 2- krajowe bez samolotu lub hotelu
+			// 3 -anulowanie delegacji				
+			taskVariables.put("accept2", "1");
+			taskService.complete(task.getId(), taskVariables);
+			System.out.println("getassigne: " + task.getAssignee());
+			System.out.println("getexecutionid: " + task.getExecutionId());
+			System.out.println("getid: " + task.getId());
+			System.out.println("getname: " + task.getName());
+			System.out.println("getprocessinstanceid: " + task.getProcessInstanceId());
 			
 			}
 		}	
@@ -172,7 +168,7 @@ public class ProcessTestMyProcessAnulujDyrektor {
 		for (Task task : tasks) {
 			
 			if(task.getProcessInstanceId().equalsIgnoreCase(processInstance.getId())){
-				taskService.claim(task.getId(), "mkorbin");
+			taskService.claim(task.getId(), "mkorbin");
 			}
 		}
 		tasks =	taskService.createTaskQuery().taskAssignee("mkorbin").list();
@@ -197,31 +193,28 @@ public class ProcessTestMyProcessAnulujDyrektor {
 		System.out.println("---------------------------------");
 		//Anulowane bedzie mail do uzytkownika
 		
-				tasks = taskService.createTaskQuery().taskCandidateGroup("Admin").list();
-				for (Task task : tasks) {
-					if(task.getProcessInstanceId().equalsIgnoreCase(processInstance.getId())){
+			tasks = taskService.createTaskQuery().taskCandidateGroup("Admin").list();
+			for (Task task : tasks) {
+				if(task.getProcessInstanceId().equalsIgnoreCase(processInstance.getId())){
 					taskService.claim(task.getId(), "mbiernat");
 
-					}
 				}
-				tasks =	taskService.createTaskQuery().taskAssignee("mbiernat").list();
-				for (Task task : tasks) {
-					if(task.getProcessInstanceId().equals(processInstance.getId())){
-					System.out.println("getassigne: " + task.getAssignee());
-					System.out.println("getexecutionid: " + task.getExecutionId());
-					System.out.println("getid: " + task.getId());
-					System.out.println("getname: " + task.getName());
-					System.out.println("getprocessinstanceid: " + task.getProcessInstanceId());
-					Map<String, Object> taskVariables = new HashMap<String, Object>();	
+			}
+		tasks =	taskService.createTaskQuery().taskAssignee("mbiernat").list();
+			for (Task task : tasks) {
+				if(task.getProcessInstanceId().equals(processInstance.getId())){
+				System.out.println("getassigne: " + task.getAssignee());
+				System.out.println("getexecutionid: " + task.getExecutionId());
+				System.out.println("getid: " + task.getId());
+				System.out.println("getname: " + task.getName());
+				System.out.println("getprocessinstanceid: " + task.getProcessInstanceId());
+				Map<String, Object> taskVariables = new HashMap<String, Object>();	
 					
-					taskService.complete(task.getId(), taskVariables);
+				taskService.complete(task.getId(), taskVariables);
 						
-					}
 				}
-				System.out.println("---------------------------------");
-			
-			
-		
+			}
+		System.out.println("---------------------------------");					
 		
 	}
 }

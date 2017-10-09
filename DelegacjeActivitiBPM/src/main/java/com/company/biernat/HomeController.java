@@ -35,17 +35,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 
-/**
- * Handles requests for the application home page.
- */
 @Controller
 public class HomeController {
 	
 
-	
-	/**
-	 * Simply selects the home view to render by returning its name.
-	 */
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
 	@Inject
@@ -56,7 +49,7 @@ public class HomeController {
 	public String home(HttpServletRequest request,Locale locale, Model model) {
         if(request.getSession().getAttribute("login")!=null){
         	return login(request, locale, model);	
-        }
+        }     
 		RepositoryService repositoryService = processEngine.getRepositoryService();	
 		repositoryService.createDeployment().addInputStream("ProcessActiviti.bpmn20.xml", ReflectUtil.getResourceAsStream("diagrams/ProcessActiviti.bpmn")).deploy();
 		Map<String, Object> variables = new HashMap<String, Object>();
@@ -259,56 +252,32 @@ public class HomeController {
 				model.addAttribute("dateStep1", taskService.getVariable(id, "dateStep1"));
 				model.addAttribute("trainingDate", taskService.getVariable(id, "trainingDate"));
 				model.addAttribute("events", taskService.getVariable(id, "events"));	
-				 List<HistoricTaskInstance> tasks2=processEngine.getHistoryService().createHistoricTaskInstanceQuery().executionId(task.getProcessInstanceId()).list();
+				List<HistoricTaskInstance> tasks2=processEngine.getHistoryService().createHistoricTaskInstanceQuery().executionId(task.getProcessInstanceId()).list();
 				HistoricVariableInstanceQuery vv=processEngine.getHistoryService().createHistoricVariableInstanceQuery().processInstanceId(task.getProcessInstanceId());
-				 List<HistoricVariableInstance> variables=vv.list();
+				List<HistoricVariableInstance> variables=vv.list();
 			 
 			}
 		}
 		return "delegacja";
 	}
 	//Szczegóły delegacji
-		@RequestMapping(value="/proces")	
-		public String proces(HttpServletRequest request,Locale locale, Model model,@RequestParam String del) {
-			String login=request.getSession().getAttribute("login").toString();
-//			TaskService taskService = processEngine.getTaskService(); 
-//			List<Task> tasks =taskService.createTaskQuery().taskAssignee(login).list();
-//			for (Task task : tasks) {
-//				String id=task.getId();
-//				if(id.equalsIgnoreCase(del)){
-//					model.addAttribute("projekt", taskService.getVariable(id, "projekt"));
-//					model.addAttribute("miejsce", taskService.getVariable(id, "miejsce"));
-//					model.addAttribute("dataRozpoczecia", taskService.getVariable(id, "dataRozpoczecia"));
-//					model.addAttribute("dataZakonczenia", taskService.getVariable(id, "dataZakonczenia"));
-//					model.addAttribute("transport", taskService.getVariable(id, "transport"));
-//					model.addAttribute("hotel", taskService.getVariable(id, "hotel"));
-//					model.addAttribute("cel", taskService.getVariable(id, "cel"));
-//					model.addAttribute("customerEamil", taskService.getVariable(id, "customerEamil"));		
-//					model.addAttribute("dateStep1", taskService.getVariable(id, "dateStep1"));
-//					model.addAttribute("trainingDate", taskService.getVariable(id, "trainingDate"));
-//					model.addAttribute("events", taskService.getVariable(id, "events"));	
-//				}
-//			}
-			
-		
-			List<HistoricTaskInstance> tasks=processEngine.getHistoryService().createHistoricTaskInstanceQuery().executionId(del).list();
-		    System.out.println("Historic Tasks size "+tasks.size());
+	@RequestMapping(value="/proces")	
+	public String proces(HttpServletRequest request,Locale locale, Model model,@RequestParam String del) {
+		String login=request.getSession().getAttribute("login").toString();
+		List<HistoricTaskInstance> tasks=processEngine.getHistoryService().createHistoricTaskInstanceQuery().executionId(del).list();
 	 
-			 List<HistoricProcessInstance> lista=processEngine.getHistoryService().createHistoricProcessInstanceQuery().involvedUser(login).list();
-			 for (HistoricProcessInstance historicProcessInstance : lista) {
-				 if(historicProcessInstance.getId().equalsIgnoreCase(del)){
-					 HistoricVariableInstanceQuery vv=processEngine.getHistoryService().createHistoricVariableInstanceQuery().processInstanceId(historicProcessInstance.getId());
-					 List<HistoricVariableInstance> variables=vv.list();				 
-					 model.addAttribute("procesDane", variables);	
-					 List<HistoricTaskInstance> tasks2=processEngine.getHistoryService().createHistoricTaskInstanceQuery().executionId(historicProcessInstance.getId()).list();
-
-				
-				 }
-		 
-			 }
-			
-			return "proces";
+		List<HistoricProcessInstance> lista=processEngine.getHistoryService().createHistoricProcessInstanceQuery().involvedUser(login).list();
+		for (HistoricProcessInstance historicProcessInstance : lista) {
+			if(historicProcessInstance.getId().equalsIgnoreCase(del)){
+			HistoricVariableInstanceQuery vv=processEngine.getHistoryService().createHistoricVariableInstanceQuery().processInstanceId(historicProcessInstance.getId());
+			List<HistoricVariableInstance> variables=vv.list();				 
+			model.addAttribute("procesDane", variables);	
+		    List<HistoricTaskInstance> tasks2=processEngine.getHistoryService().createHistoricTaskInstanceQuery().executionId(historicProcessInstance.getId()).list();
+		    }	 
 		}
+			
+		return "proces";
+	}
 	//Szcegóły delegacji na grupie
 	@RequestMapping(value="/claim")	
 	public String claim(HttpServletRequest request,Locale locale, Model model,@RequestParam String del) {

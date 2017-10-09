@@ -24,11 +24,11 @@ public class ProcessTestMyProcessAnulujKsiegowosc {
 
 	
 	ProcessEngine processEngine = ProcessEngineConfiguration
-			.createStandaloneProcessEngineConfiguration()
-			.setJdbcDriver("com.mysql.jdbc.Driver")
-			.setJdbcUrl("jdbc:mysql://localhost:3306/activiti?autoReconnect=true&useSSL=false")
-			.setJdbcPassword("210283").setJdbcUsername("root")
-			.buildProcessEngine();
+	.createStandaloneProcessEngineConfiguration()
+	.setJdbcDriver("com.mysql.jdbc.Driver")
+	.setJdbcUrl("jdbc:mysql://localhost:3306/activiti?autoReconnect=true&useSSL=false")
+	.setJdbcPassword("210283").setJdbcUsername("root")
+	.buildProcessEngine();
 
 	@Test
 	public void startProcess() throws Exception {
@@ -41,10 +41,7 @@ public class ProcessTestMyProcessAnulujKsiegowosc {
 		RepositoryService repositoryService = processEngine
 				.getRepositoryService();
 		
-		repositoryService.createDeployment().addInputStream(
-				"MyProcess.bpmn20.xml", ReflectUtil
-				.getResourceAsStream("diagrams/ProcessActiviti.bpmn"))
-		.deploy();
+		repositoryService.createDeployment().addInputStream(	"MyProcess.bpmn20.xml", ReflectUtil.getResourceAsStream("diagrams/ProcessActiviti.bpmn")).deploy();
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		Map<String, Object> variableMap = new HashMap<String, Object>();
 		variableMap.put("data", "03-10-2017");
@@ -53,12 +50,13 @@ public class ProcessTestMyProcessAnulujKsiegowosc {
 		variableMap.put("hotel", "tak");
 		variableMap.put("www", "dasas");
 		try {
-			   identityService.setAuthenticatedUserId("dasas");
-		   processInstance = runtimeService.startProcessInstanceByKey("myProcess", variableMap);
+			identityService.setAuthenticatedUserId("dasas");
+		    processInstance = runtimeService.startProcessInstanceByKey("myProcess", variableMap);
 			 
-			 } finally {
-			   identityService.setAuthenticatedUserId(null);
-			 }
+		 } 
+		finally {
+			identityService.setAuthenticatedUserId(null);
+		}
 		assertNotNull(processInstance.getId());
 		System.out.println("id " + processInstance.getId() + " "
 				+ processInstance.getProcessDefinitionId());
