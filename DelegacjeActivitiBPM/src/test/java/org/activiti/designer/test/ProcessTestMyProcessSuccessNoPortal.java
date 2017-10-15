@@ -49,6 +49,7 @@ public class ProcessTestMyProcessSuccessNoPortal {
 		variableMap.put("kraj", "Francja");
 		variableMap.put("hotel", "tak");
 		variableMap.put("www", "dasas");
+		variableMap.put("temp", "dasas");
 		try {
 			identityService.setAuthenticatedUserId("dasas");
 		    processInstance = runtimeService.startProcessInstanceByKey("myProcess", variableMap);
@@ -58,24 +59,16 @@ public class ProcessTestMyProcessSuccessNoPortal {
 			identityService.setAuthenticatedUserId(null);
 		}
 		assertNotNull(processInstance.getId());
+		
 		System.out.println("id " + processInstance.getId() + " "+ processInstance.getProcessDefinitionId());
 		System.out.println("---------------------------------");
 		//Krok2 Weryfikacja Kierownik
 		TaskService taskService = processEngine.getTaskService();
-		List<Task> tasks = taskService.createTaskQuery().taskCandidateGroup("Admin").list();
-		for (Task task : tasks) {
-			
-			if(task.getProcessInstanceId().equalsIgnoreCase(processInstance.getId())){
-				System.out.println("getassigne: " + task.getAssignee());
-				System.out.println("getexecutionid: " + task.getExecutionId());
-				System.out.println("getid: " + task.getId());
-				System.out.println("getname: " + task.getName());
-				System.out.println("getprocessinstanceid: " + task.getProcessInstanceId());
-				taskService.claim(task.getId(), "mbiernat");
-
-			}
-		}
-		tasks =	taskService.createTaskQuery().taskAssignee("mbiernat").list();
+		
+		Task task55=taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
+		System.out.println("HALLLLLLLLLLOOO "+task55);
+		
+		List<Task>tasks =	taskService.createTaskQuery().taskAssignee("tviscardi").list();
 		for (Task task : tasks) {
 			System.out.println("getprocessinstanceid: " + task.getProcessInstanceId());
 			if(task.getProcessInstanceId().equals(processInstance.getId())){

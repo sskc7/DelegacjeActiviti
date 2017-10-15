@@ -8,6 +8,7 @@
           <activiti:value id="true" name="Accept"></activiti:value>
           <activiti:value id="false" name="Rejected"></activiti:value>
         </activiti:formProperty>
+        <activiti:taskListener event="create" class="com.company.biernat.Listeners.PrzypisanieKierownikaTask"></activiti:taskListener>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow1" sourceRef="Rejestracja" targetRef="weryfikacjaKierownik"></sequenceFlow>
