@@ -14,7 +14,7 @@
     <sequenceFlow id="flow1" sourceRef="Rejestracja" targetRef="weryfikacjaKierownik"></sequenceFlow>
     <exclusiveGateway id="exclusivegateway3" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow7" sourceRef="weryfikacjaKierownik" targetRef="exclusivegateway3"></sequenceFlow>
-    <userTask id="weryfikacjaKsiegowosc" name="Weryfikacja Księgowość" activiti:candidateGroups="Ksiegowosc">
+    <userTask id="weryfikacjaKsiegowosc" name="Weryfikacja Ksiegowosc" activiti:candidateGroups="Ksiegowosc">
       <extensionElements>
         <activiti:formProperty id="accept2" name="accept2" type="enum" required="true">
           <activiti:value id="true" name="Hotel"></activiti:value>
@@ -41,7 +41,7 @@
         </activiti:formProperty>
       </extensionElements>
     </userTask>
-    <userTask id="weryfikacjaUzytkownik" name="Weryfikacja Użytkownika" activiti:assignee="${www}">
+    <userTask id="weryfikacjaUzytkownik" name="Weryfikacja Uzytkownik" activiti:assignee="${www}">
       <extensionElements>
         <activiti:formProperty id="accept3" name="accept3" type="enum" required="true">
           <activiti:value id="true" name="Accept"></activiti:value>
@@ -59,9 +59,9 @@
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${accept3==true}]]></conditionExpression>
     </sequenceFlow>
     <userTask id="portalZakupowyAnuluj" name="Portal Zakupowy Anulowanie" activiti:candidateGroups="Admin"></userTask>
-    <userTask id="rozliczenieKsiegowosc" name="Rozliczenie Księgowość" activiti:candidateGroups="Ksiegowosc"></userTask>
+    <userTask id="rozliczenieKsiegowosc" name="Rozliczenie Ksiegowość" activiti:candidateGroups="Ksiegowosc"></userTask>
     <userTask id="anulowaneKsiegowosc" name="Anulowane Ksiegowosc" activiti:candidateGroups="Admin"></userTask>
-    <userTask id="potwierdzenieUzytkownik" name="Potiwerdzenie Użytkownik" activiti:assignee="${www}"></userTask>
+    <userTask id="potwierdzenieUzytkownik" name="Potwierdzenie Uzytkownik" activiti:assignee="${www}"></userTask>
     <sequenceFlow id="flow29" sourceRef="rozliczenieKsiegowosc" targetRef="potwierdzenieUzytkownik"></sequenceFlow>
     <endEvent id="endevent2" name="End"></endEvent>
     <sequenceFlow id="flow30" sourceRef="potwierdzenieUzytkownik" targetRef="endevent2"></sequenceFlow>

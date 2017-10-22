@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dzialy>
+	 <dzial>
+	 	<nazwa>BHP</nazwa>
+		<kierownik>jdanelski</kierownik>
+	 </dzial>
+	 <dzial>
+	 	<nazwa>Dyrekcja</nazwa>
+		<kierownik>mkorbin</kierownik>
+	 </dzial>
+	 <dzial>
+	 	<nazwa>Informatycy</nazwa>
+		<kierownik>tviscardi</kierownik>
+	 </dzial>
+	 <dzial>
+	 	<nazwa>Ksiegowosc</nazwa>
+		<kierownik>aplaskota</kierownik>
+	 </dzial>
+	 <dzial>
+	 	<nazwa>Ogrodnicy</nazwa>
+		<kierownik>fadamicki</kierownik>
+	 </dzial>
+	 <dzial>
+	 	<nazwa>Sadownicy</nazwa>
+		<kierownik>pbielicki</kierownik>
+	 </dzial>
+	 <dzial>
+	 	<nazwa>upowszechnianie</nazwa>
+		<kierownik>mkowalski2</kierownik>
+	 </dzial>
+	 <dzial>
+	 	<nazwa>Admin</nazwa>
+		<kierownik>mbiernat</kierownik>
+	 </dzial>
+		
+</dzialy>

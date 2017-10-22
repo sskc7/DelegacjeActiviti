@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -7,7 +7,7 @@
 <title>Sukces</title>
 </head>
 <body>
-<h2>Delegacja złożona</h2>
-<a href="panel">Powrót do menu</a>
+	<h2>Delegacja złożona</h2>
+	<a href="panel">Powrót do menu</a>
 </body>
 </html>

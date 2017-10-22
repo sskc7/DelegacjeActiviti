@@ -22,96 +22,101 @@ import org.junit.Test;
 
 public class JUnitMyProcessSuccessNoPortal {
 
-	
-	ProcessEngine processEngine = ProcessEngineConfiguration
-	.createStandaloneProcessEngineConfiguration()
-	.setJdbcDriver("com.mysql.jdbc.Driver")
-	.setJdbcUrl("jdbc:mysql://localhost:3306/activiti?autoReconnect=true&useSSL=false")
-	.setJdbcPassword("210283").setJdbcUsername("root")
-	.buildProcessEngine();
+  ProcessEngine processEngine = ProcessEngineConfiguration
+      .createStandaloneProcessEngineConfiguration()
+      .setJdbcDriver("com.mysql.jdbc.Driver")
+      .setJdbcUrl(
+          "jdbc:mysql://localhost:3306/activiti?autoReconnect=true&useSSL=false")
+      .setJdbcPassword("210283").setJdbcUsername("root").buildProcessEngine();
 
-	@Test
-	public void startProcess() throws Exception {
-		//Krok1 Rejestracja Wniosku
-		
-		
-		IdentityService  identityService=processEngine.getIdentityService();
-		ProcessInstance processInstance ;
-		
-		RepositoryService repositoryService = processEngine
-				.getRepositoryService();
-		
-		repositoryService.createDeployment().addInputStream("MyProcess.bpmn20.xml", ReflectUtil.getResourceAsStream("diagrams/ProcessActiviti.bpmn")).deploy();
-		RuntimeService runtimeService = processEngine.getRuntimeService();
-		Map<String, Object> variableMap = new HashMap<String, Object>();
-		variableMap.put("data", "03-10-2017");
-		variableMap.put("projekt", "projektEuro");
-		variableMap.put("kraj", "Francja");
-		variableMap.put("hotel", "tak");
-		variableMap.put("www", "dasas");
-		variableMap.put("temp", "dasas");
-		try {
-			identityService.setAuthenticatedUserId("dasas");
-		    processInstance = runtimeService.startProcessInstanceByKey("myProcess", variableMap);
-			 
-		} 
-		finally {
-			identityService.setAuthenticatedUserId(null);
-		}
-		assertNotNull(processInstance.getId());
+  @Test
+  public void startProcess() throws Exception {
+    // Krok1 Rejestracja Wniosku
 
-		//Krok2 Weryfikacja Kierownik
-		TaskService taskService = processEngine.getTaskService();		
-		Task task=taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
+    IdentityService identityService = processEngine.getIdentityService();
+    ProcessInstance processInstance;
 
+    RepositoryService repositoryService = processEngine.getRepositoryService();
 
-        assertEquals("tviscardi",task.getAssignee());
-		
-		Map<String, Object> taskVariables = new HashMap<String, Object>();				
-		taskVariables.put("accept1", "true");
-		taskService.complete(task.getId(), taskVariables);
-		
-		//Krok3 Weryfikacja Ksiegowosc
-		task=taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
-		assertNull(task.getAssignee());
-		taskService.claim(task.getId(), "kgorska");		
-		task=taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
-		assertEquals("kgorska",task.getAssignee());
-		taskVariables = new HashMap<String, Object>();	
-		taskVariables.put("accept2", "2");
-	    taskService.complete(task.getId(), taskVariables);
-	
-	  	
-		//Krok6 Weryfikacja Dyrektor
-		
-	    task=taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
-	    assertNull(task.getAssignee());
-	    taskService.claim(task.getId(), "mkorbin");
-	    task=taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
-	    assertEquals("mkorbin",task.getAssignee());
-	    taskVariables = new HashMap<String, Object>();
-	    taskVariables.put("accept4", "3");
-	    taskService.complete(task.getId(), taskVariables);
-		
-	
-	    
-		//Krok 8 Rejestracja w Ksiegowsci
-	    task=taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
-	    assertNull(task.getAssignee());
-	    taskService.claim(task.getId(), "kgorska");
-	    task=taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
-	    assertEquals("kgorska",task.getAssignee());
-	    taskVariables = new HashMap<String, Object>();
-	    taskService.complete(task.getId(), taskVariables);
+    repositoryService.createDeployment()
+        .addInputStream("MyProcess.bpmn20.xml",
+            ReflectUtil.getResourceAsStream("diagrams/ProcessActiviti.bpmn"))
+        .deploy();
+    RuntimeService runtimeService = processEngine.getRuntimeService();
+    Map<String, Object> variableMap = new HashMap<String, Object>();
+    variableMap.put("data", "03-10-2017");
+    variableMap.put("projekt", "projektEuro");
+    variableMap.put("kraj", "Francja");
+    variableMap.put("hotel", "tak");
+    variableMap.put("www", "dasas");
+    variableMap.put("temp", "dasas");
+    try {
+      identityService.setAuthenticatedUserId("dasas");
+      processInstance = runtimeService.startProcessInstanceByKey("myProcess",
+          variableMap);
 
-		//Krok 9 Weryfikacja użytkownika
-	    task=taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
-	    assertEquals("dasas",task.getAssignee());
-	    taskVariables = new HashMap<String, Object>();	
-	    taskService.complete(task.getId(), taskVariables);
-	    task=taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
-	    assertNull(task);	   
-			
-	}	
-		
+    } finally {
+      identityService.setAuthenticatedUserId(null);
+    }
+    assertNotNull(processInstance.getId());
+
+    // Krok2 Weryfikacja Kierownik
+    TaskService taskService = processEngine.getTaskService();
+    Task task = taskService.createTaskQuery()
+        .executionId(processInstance.getId()).singleResult();
+
+    assertEquals("tviscardi", task.getAssignee());
+
+    Map<String, Object> taskVariables = new HashMap<String, Object>();
+    taskVariables.put("accept1", "true");
+    taskService.complete(task.getId(), taskVariables);
+
+    // Krok3 Weryfikacja Ksiegowosc
+    task = taskService.createTaskQuery().executionId(processInstance.getId())
+        .singleResult();
+    assertNull(task.getAssignee());
+    taskService.claim(task.getId(), "kgorska");
+    task = taskService.createTaskQuery().executionId(processInstance.getId())
+        .singleResult();
+    assertEquals("kgorska", task.getAssignee());
+    taskVariables = new HashMap<String, Object>();
+    taskVariables.put("accept2", "2");
+    taskService.complete(task.getId(), taskVariables);
+
+    // Krok6 Weryfikacja Dyrektor
+
+    task = taskService.createTaskQuery().executionId(processInstance.getId())
+        .singleResult();
+    assertNull(task.getAssignee());
+    taskService.claim(task.getId(), "mkorbin");
+    task = taskService.createTaskQuery().executionId(processInstance.getId())
+        .singleResult();
+    assertEquals("mkorbin", task.getAssignee());
+    taskVariables = new HashMap<String, Object>();
+    taskVariables.put("accept4", "3");
+    taskService.complete(task.getId(), taskVariables);
+
+    // Krok 8 Rejestracja w Ksiegowsci
+    task = taskService.createTaskQuery().executionId(processInstance.getId())
+        .singleResult();
+    assertNull(task.getAssignee());
+    taskService.claim(task.getId(), "kgorska");
+    task = taskService.createTaskQuery().executionId(processInstance.getId())
+        .singleResult();
+    assertEquals("kgorska", task.getAssignee());
+    taskVariables = new HashMap<String, Object>();
+    taskService.complete(task.getId(), taskVariables);
+
+    // Krok 9 Weryfikacja użytkownika
+    task = taskService.createTaskQuery().executionId(processInstance.getId())
+        .singleResult();
+    assertEquals("dasas", task.getAssignee());
+    taskVariables = new HashMap<String, Object>();
+    taskService.complete(task.getId(), taskVariables);
+    task = taskService.createTaskQuery().executionId(processInstance.getId())
+        .singleResult();
+    assertNull(task);
+
+  }
+
 }
