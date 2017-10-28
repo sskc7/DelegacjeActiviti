@@ -80,7 +80,6 @@ public class JUnitMyProcessSuccess {
         .singleResult();
     assertEquals("kgorska", task.getAssignee());
     taskVariables = new HashMap<String, Object>();
-    System.out.println(task.getName());
     taskVariables.put("accept2", "1");
     taskService.complete(task.getId(), taskVariables);
     // Krok4 Portal Zakupowy wygenerowana propozycja
@@ -102,7 +101,6 @@ public class JUnitMyProcessSuccess {
         .singleResult();
     assertEquals("dasas", task.getAssignee());
     taskVariables = new HashMap<String, Object>();
-    System.out.println(task.getName());
     taskVariables.put("accept3", "true");
     taskService.complete(task.getId(), taskVariables);
 
@@ -116,7 +114,6 @@ public class JUnitMyProcessSuccess {
         .singleResult();
     assertEquals("mkorbin", task.getAssignee());
     taskVariables = new HashMap<String, Object>();
-    System.out.println(task.getName());
     taskVariables.put("accept4", "4");
     taskService.complete(task.getId(), taskVariables);
 

@@ -53,6 +53,8 @@ public class HomeController {
         .addInputStream("ProcessActiviti.bpmn20.xml",
             ReflectUtil.getResourceAsStream("diagrams/ProcessActiviti.bpmn"))
         .deploy();
+    logger.info("Utworzone Repository Service");
+
     return "login";
   }
 
@@ -61,6 +63,7 @@ public class HomeController {
   public String login(HttpServletRequest request, Locale locale, Model model) {
     logger.info("Logowanie", locale);
     if (request.getSession().getAttribute("login") != null) {
+      logger.info("Zalogowany {}.", request.getSession().getAttribute("login"));
       return loginWeryfikacja(request, locale, model);
     }
     return "login";
@@ -122,8 +125,14 @@ public class HomeController {
     try {
       identityService.setAuthenticatedUserId(login);
       runtimeService.startProcessInstanceByKey("myProcess", variables);
+      logger.info("Utworzony nowy process");
+      logger.info("Szczegóły delegacji {}. ", variables);
 
-    } finally {
+    } catch (Exception exception) {
+      logger.error("Błąd przy tworzeniu procesu {}.", exception);
+    }
+
+    finally {
       identityService.setAuthenticatedUserId(null);
     }
 
@@ -140,6 +149,8 @@ public class HomeController {
     TaskService taskService = processEngine.getTaskService();
     List<Task> tasks = taskService.createTaskQuery().taskAssignee(login).list();
     model.addAttribute("zadania", tasks);
+    logger.info("Wyświetlone delegacje do zatwierdzenia dla uzytkownika {}.",
+        login);
     return "delegacje";
   }
 
@@ -167,6 +178,7 @@ public class HomeController {
     }
 
     model.addAttribute("zadania", processList);
+    logger.info("Wyświetlone procesy uzytkownika {}.", login);
     return "procesy";
   }
 
@@ -188,9 +200,15 @@ public class HomeController {
           .taskCandidateGroup(partofuse.getName()).list();
       if (groupTasks != null) {
         userTasks.addAll(groupTasks);
+
       }
+      logger.info("Wyświetlone delegacje do zatwierdzenia dla grupy  {}.",
+          partofuse.getName());
     }
     model.addAttribute("zadania", userTasks);
+    logger.info(
+        "Wyświetlone delegacje do zatwierdzenia dla grup uzytkownika  {}.",
+        login);
     return "claims";
   }
 
@@ -226,6 +244,8 @@ public class HomeController {
             .executionId(task.getExecutionId()).list();
 
         model.addAttribute("taskHistory", tasksHistoric);
+
+        logger.info("Informacje o delegacji  {}.", id);
       }
     }
     return "delegacja";
@@ -236,13 +256,12 @@ public class HomeController {
   public String proces(HttpServletRequest request, Locale locale, Model model,
       @RequestParam String del) {
     String login = request.getSession().getAttribute("login").toString();
-
+    logger.info("Procesy uzytkownika  {}.", login);
     List<HistoricProcessInstance> processList = processEngine
         .getHistoryService().createHistoricProcessInstanceQuery()
         .involvedUser(login).list();
     for (HistoricProcessInstance historicProcessInstance : processList) {
       if (historicProcessInstance.getId().equalsIgnoreCase(del)) {
-
         HistoricVariableInstanceQuery historicVarables = processEngine
             .getHistoryService().createHistoricVariableInstanceQuery()
             .processInstanceId(historicProcessInstance.getId());
@@ -307,6 +326,8 @@ public class HomeController {
               taskService.getVariable(id, "customerEamil"));
           model.addAttribute("trainingDate",
               taskService.getVariable(id, "trainingDate"));
+
+          logger.info("Informacje o delegacji  {}.", id);
         }
       }
     }
@@ -323,24 +344,42 @@ public class HomeController {
     for (Task task : tasks) {
       String id = task.getId();
       if (id.equalsIgnoreCase(del)) {
-        if (task.getName().equalsIgnoreCase("Weryfikacja Kierownik")) {
+        String taskName = task.getName();
+        logger.info("Delegacja  {}. na kroku", id, taskName);
+
+        if (taskName.equalsIgnoreCase("Weryfikacja Kierownik")) {
           Map<String, Object> taskVariables = new HashMap<String, Object>();
           taskVariables.put("accept1", "true");
           taskService.complete(task.getId(), taskVariables);
-        } else if (task.getName().equalsIgnoreCase("Weryfikacja Ksiegowosc")) {
+          logger.info(
+              "Weryfikacja Kierownika  Delegacje {} Zaakceptowano przez{}.", id,
+              login);
+        } else if (taskName.equalsIgnoreCase("Weryfikacja Ksiegowosc")) {
           Map<String, Object> taskVariables = new HashMap<String, Object>();
           taskVariables.put("accept2", "1");
           taskService.complete(task.getId(), taskVariables);
-        } else if (task.getName().equalsIgnoreCase("Weryfikacja Uzytkownik")) {
+          logger.info(
+              "Weryfikacja Ksiegowosc  Delegacje {} Zaakceptowano przez{}.", id,
+              login);
+        } else if (taskName.equalsIgnoreCase("Weryfikacja Uzytkownik")) {
           Map<String, Object> taskVariables = new HashMap<String, Object>();
           taskVariables.put("accept3", "true");
           taskService.complete(task.getId(), taskVariables);
-        } else if (task.getName().equalsIgnoreCase("Weryfikacja Dyrektor")) {
+          logger.info(
+              "Weryfikacja Uzytkownik  Delegacje {} Zaakceptowano przez {}.",
+              id, login);
+        } else if (taskName.equalsIgnoreCase("Weryfikacja Dyrektor")) {
           Map<String, Object> taskVariables = new HashMap<String, Object>();
           taskVariables.put("accept4", "4");
           taskService.complete(task.getId(), taskVariables);
+          logger.info(
+              "Weryfikacja Dyrektor  Delegacje {} Zaakceptowano przez{}.", id,
+              login);
         } else {
           taskService.complete(task.getId());
+          logger.info("{}. Delegacje " + id + " Zaakceptowano przez {} .",
+              taskName, login);
+
         }
       }
     }
@@ -364,6 +403,8 @@ public class HomeController {
         if (id.equalsIgnoreCase(del)) {
           if (id.equalsIgnoreCase(del)) {
             taskService.claim(task.getId(), login);
+            logger.info("Delegacja  {}. , przypisana do uzytkownika {}. ", id,
+                login);
           }
         }
 
@@ -380,6 +421,7 @@ public class HomeController {
     String login = request.getSession().getAttribute("login").toString();
     if (login != null) {
       request.getSession().setAttribute("login", null);
+      logger.info("Wylogowano uzytkownika  {}.", login);
     }
     return "login";
   }
